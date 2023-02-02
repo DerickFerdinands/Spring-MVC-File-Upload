@@ -1,5 +1,6 @@
 package lk.ijse.spring.controller;
 
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -15,24 +16,20 @@ import java.nio.file.Paths;
 public class FileController {
 
     @PostMapping
-    public String handleFileUpload(@RequestParam("file") MultipartFile file,
-                                   RedirectAttributes redirectAttributes) {
+    public String  submit(@RequestParam("file") MultipartFile file, ModelMap modelMap) {
+        System.out.println("Invoked");
+        modelMap.addAttribute("file", file);
 
         if (!file.isEmpty()) {
             try {
                 byte[] bytes = file.getBytes();
-                Path path = Paths.get("/path/to/uploaded_file.txt");
+                Path path = Paths.get("uploaded_file.txt");
                 Files.write(path, bytes);
-
-                redirectAttributes.addFlashAttribute("message",
-                        "You successfully uploaded '" + file.getOriginalFilename() + "'");
+                System.out.println("Done!");
             } catch (IOException e) {
-                redirectAttributes.addFlashAttribute("message", "Failed to upload '" + file.getOriginalFilename() + "'");
+              e.printStackTrace();
             }
-        } else {
-            redirectAttributes.addFlashAttribute("message", "Failed to upload '" + file.getOriginalFilename() + "' because it was empty");
         }
-
-        return "redirect:/upload_status";
+        return "fileUploadView";
     }
 }
