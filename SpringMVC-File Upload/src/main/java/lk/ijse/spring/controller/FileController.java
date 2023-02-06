@@ -1,10 +1,5 @@
 package lk.ijse.spring.controller;
 
-import lk.ijse.spring.util.ResponseUtil;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 
 @RestController
@@ -23,7 +17,7 @@ import java.util.Arrays;
 public class FileController {
 
     @PostMapping()
-    public  ArrayList<Byte> submit(@RequestParam("file") MultipartFile file, ModelMap modelMap) {
+    public ArrayList<Byte> submit(@RequestParam("file") MultipartFile file, ModelMap modelMap) {
         System.out.println("Invoked");
         modelMap.addAttribute("file", file);
 
@@ -35,7 +29,7 @@ public class FileController {
                 file.transferTo(path);
                 byte[] imageBytes = Files.readAllBytes(path);
                 ArrayList<Byte> byteStream = new ArrayList<>();
-                for (byte b : imageBytes){
+                for (byte b : imageBytes) {
                     byteStream.add(b);
                 }
                 return byteStream;
@@ -45,7 +39,6 @@ public class FileController {
         }
         return null;
     }
-
 
 
 }
