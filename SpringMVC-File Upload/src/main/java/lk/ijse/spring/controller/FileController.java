@@ -1,5 +1,6 @@
 package lk.ijse.spring.controller;
 
+import lk.ijse.spring.util.ResponseUtil;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,6 +13,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 @RestController
@@ -19,8 +22,8 @@ import java.nio.file.Paths;
 @CrossOrigin
 public class FileController {
 
-    @PostMapping
-    public ResponseEntity<byte[]> submit(@RequestParam("file") MultipartFile file, ModelMap modelMap) {
+    @PostMapping()
+    public  ArrayList<Byte> submit(@RequestParam("file") MultipartFile file, ModelMap modelMap) {
         System.out.println("Invoked");
         modelMap.addAttribute("file", file);
 
@@ -30,9 +33,12 @@ public class FileController {
                 Path path = Paths.get("C:\\Users\\deric\\Downloads\\filename.jpeg");
                 Files.write(path, bytes);
                 file.transferTo(path);
-                return ResponseEntity.ok()
-                        .header(HttpHeaders.CONTENT_TYPE, "image/jpeg")
-                        .body(bytes);
+                byte[] imageBytes = Files.readAllBytes(path);
+                ArrayList<Byte> byteStream = new ArrayList<>();
+                for (byte b : imageBytes){
+                    byteStream.add(b);
+                }
+                return byteStream;
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -40,22 +46,6 @@ public class FileController {
         return null;
     }
 
-    @GetMapping
-    public ResponseEntity<byte[]> getImage() {
-        System.out.println("GET");
-        try {
-            // Read the image file from the specified directory.
-            Path path = Paths.get("C:\\Users\\deric\\Downloads\\filename.jpeg");
-            byte[] imageBytes = Files.readAllBytes(path);
-
-            // Set the content type and return the image in the response body.
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.IMAGE_JPEG);
-            return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
-        } catch (IOException e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
 
 
 }
